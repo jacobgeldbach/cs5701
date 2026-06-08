@@ -1,8 +1,6 @@
 _ROWS = 6
 _COLS = 7
 
-MAX_DEPTH = 6
-
 class Board:
     def __init__(self):
         self.grid = [[0] * _COLS for _ in range(_ROWS)]

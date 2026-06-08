@@ -11,7 +11,6 @@ from minimax import mini_max
 
 _PLAYER_NAME = {1: 'Red', 2: 'Blue'}
 
-
 def _wait(ms: int) -> bool:
     elapsed = 0
     while elapsed < ms:
@@ -33,6 +32,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', required=True, choices=['ai_vs_human', 'ai_vs_ai'])
     parser.add_argument('--depth', required=True, type=int)
+    parser.add_argument('--prune', required=True, type=bool)
     args = parser.parse_args()
 
     board = Board()
@@ -63,7 +63,7 @@ def main():
             running = _wait(400)
             if not running:
                 break
-            col = mini_max(copy.deepcopy(board), args.depth, current)
+            col = mini_max(copy.deepcopy(board), args.depth, current, args.prune)
 
         board.drop_piece(col, current)
         draw_status(screen, f"{_PLAYER_NAME[current]}'s Turn", current)
