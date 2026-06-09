@@ -63,6 +63,7 @@ def main():
             running = _wait(400)
             if not running:
                 break
+            # Just to perserve our game board pass in a copy for the lookahead moves (even though they are undone each step)
             col = mini_max(copy.deepcopy(board), args.depth, current, args.prune)
 
         board.drop_piece(col, current)

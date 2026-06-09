@@ -18,6 +18,12 @@ class Board:
                 return row
         return -1
 
+    def undo_piece(self, col: int) -> None:
+        for row in range(_ROWS):
+            if self.grid[row][col] != 0:
+                self.grid[row][col] = 0
+                return
+    
     def check_win(self, player: int) -> bool:
         g = self.grid
         for r in range(_ROWS):
@@ -38,6 +44,8 @@ class Board:
                     return True
         return False
 
+
+
     def is_draw(self) -> bool:
         return all(self.grid[0][c] != 0 for c in range(_COLS))
 
@@ -45,17 +53,14 @@ class Board:
     def eval(self, player: int) -> float:
         opponent = 1 if player == 2 else 2
 
-        if self.check_win(opponent):
-            return float('-inf')
-
-        if self.check_win(player):
-            return float('inf')
-
-        if self.is_draw():
-            return 0
-
         eval_total = 0
+
         g = self.grid
+        # Immediately give a score boost for number of pieces in the center column, this helps the move reordering prune more branches
+        center_col = [g[r][3] for r in range(_ROWS)]
+        center_count = sum(1 for cell in center_col if cell == player)
+        eval_total += center_count * 50
+
         # Per window checks, where a window is a 4 playable sections in a row that would be a win
         for r in range(_ROWS):
             for c in range(_COLS - 3):
@@ -66,12 +71,12 @@ class Board:
                 if (count and opp_count):
                     continue
 
-                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
-                    
                 # Need to prioritize not losing (blocking this window)
                 if opp_count == 3:
                     window_eval = -1000
-
+                
+                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
+                    
                 eval_total += window_eval
                         
 
@@ -83,12 +88,12 @@ class Board:
                 # This window is unscorable if there are both colors in it
                 if (count and opp_count):
                     continue
-                    
-                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
 
                 # Need to prioritize not losing (blocking this window)
                 if opp_count == 3:
                     window_eval = -1000
+                    
+                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
 
                 eval_total += window_eval
 
@@ -101,11 +106,13 @@ class Board:
                 if (count and opp_count):
                     continue
                     
-                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
-
                 # Need to prioritize not losing (blocking this window)
+                # Also since there is a single move to win/lose state to save time, score it high and return the board eval immediately
                 if opp_count == 3:
                     window_eval = -1000
+       
+
+                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
 
                 eval_total += window_eval
 
@@ -117,14 +124,13 @@ class Board:
                 # This window is unscorable if there are both colors in it
                 if (count and opp_count):
                     continue
-                    
-                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
-                
+              
                 # Need to prioritize not losing (blocking this window)
                 if opp_count == 3:
                     window_eval = -1000
-
-
+                
+                window_eval = (((count * 10) * count) + ((opp_count * -10) * opp_count))
+                
                 eval_total += window_eval
 
         return eval_total
