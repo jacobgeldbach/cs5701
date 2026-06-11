@@ -1,13 +1,13 @@
 import argparse
 import pygame
 import copy
-import random
+import time
 from board import Board
 from visualization import (
     init_display, draw_board, draw_ghost, draw_status,
     draw_end_overlay, handle_events, handle_end_events, mouse_to_col,
 )
-from minimax import mini_max 
+from minimax import mini_max, player1_nodes, player2_nodes
 
 _PLAYER_NAME = {1: 'Red', 2: 'Blue'}
 
@@ -32,14 +32,18 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', required=True, choices=['ai_vs_human', 'ai_vs_ai'])
     parser.add_argument('--depth', required=True, type=int)
-    parser.add_argument('--prune', required=True, type=bool)
+    parser.add_argument('--prune', required=True, type=lambda x: x.lower() in ('true', '1'))
+    parser.add_argument('--deepen', type=lambda x: x.lower() in ('true', '1'), default=False)
+    parser.add_argument('--selective', type=lambda x: x.lower() in ('true', '1'), default=False)
     args = parser.parse_args()
 
     board = Board()
     screen = init_display()
-    current = random.choice([1, 2])
+    current = 1
     hover_col = None
     running = True
+    turns = 0
+    game_start = time.time() if args.mode == 'ai_vs_ai' else None
 
     while running:
         human_turn = (args.mode == 'ai_vs_human' and current == 1)
@@ -64,18 +68,35 @@ def main():
             if not running:
                 break
             # Just to perserve our game board pass in a copy for the lookahead moves (even though they are undone each step)
-            col = mini_max(copy.deepcopy(board), args.depth, current, args.prune)
+            col = mini_max(copy.deepcopy(board), args.depth, current, args.prune, args.deepen, args.selective)
 
         board.drop_piece(col, current)
+        turns += 1
         draw_status(screen, f"{_PLAYER_NAME[current]}'s Turn", current)
         draw_ghost(screen, None, current)
         draw_board(screen, board.grid)
         pygame.display.flip()
 
         if board.check_win(current):
+            import minimax
+            if game_start:
+                duration = time.time() - game_start
+                print(f"Game duration: {duration:.2f}s")
+                print(f"Avg time per turn: {duration / turns:.3f}s")
+            print(f"Red  total nodes explored: {minimax.player1_nodes}")
+            print(f"Blue total nodes explored: {minimax.player2_nodes}")
+            print(f"Total turns: {turns}")
             _end_screen(screen, f"{_PLAYER_NAME[current]} Wins")
             break
         if board.is_draw():
+            import minimax
+            if game_start:
+                duration = time.time() - game_start
+                print(f"Game duration: {duration:.2f}s")
+                print(f"Avg time per turn: {duration / turns:.3f}s")
+            print(f"Red  total nodes explored: {minimax.player1_nodes}")
+            print(f"Blue total nodes explored: {minimax.player2_nodes}")
+            print(f"Total turns: {turns}")
             _end_screen(screen, "Draw")
             break
 
