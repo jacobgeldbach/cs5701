@@ -38,16 +38,23 @@ def cell_conflicts(grid: list[list[int]], r: int, c: int, diagonals: bool) -> in
     return _conflicts_against(grid[r][c], _neighbor_values(grid, r, c, diagonals))
 
 
-# One full pass over the grid. Returns (conflicted, worst):
+# One full pass over the grid. Returns (conflicted, worst, total):
 #   conflicted -- the set of every (row, col) with at least one conflict, used
 #                 for the red overlay and the live "Conflicts: N" readout.
 #   worst      -- a cell chosen at random from those tied for the most conflicts
 #                 (ties are common, so the random pick keeps the search from
 #                 always working the same corner), or None when the grid is
-#                 conflict free, which is the solved state.
+#                 conflict free, which is the solved state. Used by the default
+#                 most-conflicted-first mode; --classic ignores it.
+#   total      -- the sum of every cell's conflict count (each violating edge
+#                 counted twice). This is the progress metric the stopping
+#                 criterion watches: unlike the conflicted-cell count it drops
+#                 when a cell goes from, say, 4 conflicts to 1, so genuine
+#                 progress that doesn't fully clear a cell still registers.
 def scan_conflicts(grid: list[list[int]],
-                   diagonals: bool) -> tuple[set[tuple[int, int]], tuple[int, int] | None]:
+                   diagonals: bool) -> tuple[set[tuple[int, int]], tuple[int, int] | None, int]:
     conflicted = set()
+    total = 0
     best_count = 0
     best_cells = []
     for r in range(len(grid)):
@@ -56,13 +63,14 @@ def scan_conflicts(grid: list[list[int]],
             if n == 0:
                 continue
             conflicted.add((r, c))
+            total += n
             if n > best_count:
                 best_count = n
                 best_cells = [(r, c)]
             elif n == best_count:
                 best_cells.append((r, c))
     worst = random.choice(best_cells) if best_cells else None
-    return conflicted, worst
+    return conflicted, worst, total
 
 
 # Min-conflicts value selection: of the six terrains, pick the one that leaves

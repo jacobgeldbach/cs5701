@@ -6,6 +6,7 @@ class GenerationStats:
     rows:            int
     cols:            int
     diagonals:       bool
+    classic:         bool
     steps:           int
     restarts:        int
     initial_conflicts: int
@@ -15,8 +16,11 @@ class GenerationStats:
 
     def __str__(self) -> str:
         neighbors = 8 if self.diagonals else 4
+        mode = 'classic (random conflicted cell)' if self.classic \
+            else 'most-conflicted-first'
         return (
             f"  Grid              : {self.rows}x{self.cols} ({neighbors}-neighbor)\n"
+            f"  Mode              : {mode}\n"
             f"  Solved            : {self.solved}\n"
             f"  Steps             : {self.steps}\n"
             f"  Restarts          : {self.restarts}\n"

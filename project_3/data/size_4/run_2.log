@@ -1,0 +1,12 @@
+pygame 2.6.1 (SDL 2.28.4, Python 3.11.2)
+Hello from the pygame community. https://www.pygame.org/contribute.html
+
+Min-Conflicts Results:
+  Grid              : 200x200 (4-neighbor)
+  Mode              : classic (random conflicted cell)
+  Solved            : True
+  Steps             : 79144
+  Restarts          : 0
+  Initial conflicts : 38124
+  Final conflicts   : 0
+  Runtime           : 11539.9221s
