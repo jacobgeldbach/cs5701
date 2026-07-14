@@ -1,0 +1,163 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{dblfloatfix}
+\usepackage{float}
+
+\graphicspath{{images/}}
+
+\begin{document}
+
+% TODO: adjust title as you see fit
+\title{Min-Conflicts Local Search on a Terrain Map-Coloring CSP}
+
+\author{
+    \IEEEauthorblockN{Jacob A. Geldbach}
+    \IEEEauthorblockA{
+        \textit{College of Engineering: CS} \\
+        \textit{University of Idaho} \\
+        Moscow Idaho, United States \\
+        geld8788@vandals.uidaho.edu
+    }
+}
+
+\maketitle
+
+\begin{abstract}
+    % TODO: write abstract (optional; not a required section per the spec)
+\end{abstract}
+
+\begin{IEEEkeywords}
+    % TODO: keywords, e.g. Min-Conflicts, CSP, Local Search, Constraint Satisfaction
+\end{IEEEkeywords}
+
+% =======================================================
+\section{Introduction}
+% TODO: what you did and what your general results were.
+
+
+% =======================================================
+\section{Algorithm Description}
+% Explain min-conflicts in your own words. Cover:
+%   - Core idea: how it decides WHICH cell to change and WHAT value to assign.
+%   - Why a random complete assignment differs from building a solution incrementally.
+%   - Completeness: is it guaranteed to find a solution if one exists? Why / why not?
+%   - Your stopping criterion: what it is, why you chose it, effect on failure counts.
+%   - Anything non-standard or tricky you implemented.
+
+
+% =======================================================
+\section{Results}
+
+% -------------------------------------------------------
+\subsection{Map Visualizations}
+% Before/after pair for at least one map size, with a legend of terrain colors.
+% Drop your PNGs into images/ and rename below (or change the filenames here).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.42\linewidth]{map_before}
+\hfil
+\includegraphics[width=0.42\linewidth]{map_after}
+\caption{% TODO: caption. Left: initial random terrain assignment (before).
+         % Right: final constraint-satisfying map (after). State the map size.
+         }
+\label{fig:before_after}
+\end{figure*}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{legend}
+\caption{% TODO: terrain-type / color legend.
+         }
+\label{fig:legend}
+\end{figure}
+
+% TODO: briefly describe what changed between the before and after images.
+
+
+% -------------------------------------------------------
+\subsection{Results Table}
+% Averages over 16 trials per condition. Fill the three data columns.
+% Failures: enter 0 if a condition never failed.
+% Avg. Iterations: enter N/A if a condition never succeeded.
+
+\begin{table*}[t]
+\caption{Min-Conflicts --- Convergence Results (16 trials per condition)}
+\begin{center}
+\footnotesize
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{c c >{\centering\arraybackslash}p{1.4in} >{\centering\arraybackslash}p{1.3in} >{\raggedright\arraybackslash}p{1.8in}}
+\toprule
+\textbf{Map Size} & \textbf{Diagonals} & \textbf{\shortstack{Avg. Iterations\\(success)}} & \textbf{\shortstack{Failures\\(out of 16 trials)}} & \textbf{Stopping Criterion} \\
+\midrule
+50$\times$50   & On  &  &  &  \\
+50$\times$50   & Off &  &  &  \\
+75$\times$75   & On  &  &  &  \\
+75$\times$75   & Off &  &  &  \\
+100$\times$100 & On  &  &  &  \\
+100$\times$100 & Off &  &  &  \\
+150$\times$150 & On  &  &  &  \\
+150$\times$150 & Off &  &  &  \\
+200$\times$200 & On  &  &  &  \\
+200$\times$200 & Off &  &  &  \\
+\bottomrule
+\end{tabular}
+\label{tab:results}
+\end{center}
+\end{table*}
+
+
+% -------------------------------------------------------
+\subsection{Convergence Graph}
+% Map size vs. average iterations to convergence, one series per diagonals setting.
+% Drop convergence.png into images/. Note any frequent-failure conditions near the graph.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{convergence}
+\caption{% TODO: caption. Map size vs. mean iterations to convergence (successful runs),
+         % 4-neighbor vs. 8-neighbor. Note conditions with frequent failures.
+         }
+\label{fig:convergence}
+\end{figure}
+
+
+% =======================================================
+\section{Discussion}
+% Synthesize results using specific numbers from the table and graph. Address:
+%   - How did convergence time scale with map size? Linear / faster / slower than linear?
+%   - Effect of diagonal neighbors on convergence and failure rates. Was it expected?
+%   - Any runs that got "stuck" making little/no progress? What was happening?
+%   - What the before/after images tell you about how the algorithm works;
+%     is the after map geographically plausible? Why / why not?
+%   - How min-conflicts compares conceptually to the Project 1 search algorithms;
+%     key differences in how each approaches the problem.
+
+
+% =======================================================
+\section*{Use of AI}
+
+\subsection*{Coding}
+% Which tool(s) / model(s), and how used (initial code, debugging, APIs, tests, other).
+
+
+\subsection*{What Worked and Didn't Work}
+% How useful AI assistance was for coding and why; anything that didn't work well.
+
+
+\subsection*{Writing}
+% Whether AI helped draft/revise the write-up, how, and how you ensured the final
+% text reflects your own understanding. (Write N/A if you used none.)
+
+
+\end{document}
