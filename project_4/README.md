@@ -1,60 +1,18 @@
-# Project 4 — Learning Decision Tree for Robot Help-Seeking
+# Task: Implement learning decision tree algorithm using python to guide a robot on whether it needs to ask a human for help.
 
-## 1. Problem Statement
-<!-- What the robot is deciding: "yes" = ask for help, "no" = decide on its own. -->
+# Information: Information gain theory calculation will need to be used in order to choose which attribute to use as the root of the tree and which attribute to use next until the tree is complete. Based on which attribute gives the most amount of information gained. The Inforamtion calculation theory: I(p(v1) ... p(vn)) = E-p(vi)log2(p(vi)
 
-### 1.1 Attributes
-<!-- The 7 binary attributes and their meanings. -->
+# Context: The problem is for a robot to decide whether to ask for help in a given 
+situation: "yes" means ask for help, "no" means don't ask for help, i.e. the
+robot makes its own decision.
+The attributes are all binary, they are:
 
-### 1.2 Target Class
-<!-- "yes" / "no". -->
+Familiar situation - the robot has the seen this situation before.
+In a hurry - whether the robot's mission time critical, which relates to whether it has time to request assistance.
+Long delay - is there a long delay in getting help when its requested.
+Safe situation - is the current situation generally safe.
+Confident - is the robot confident it knows the right decision.
+Safety critical decision - does the decision effect a critical safety feature.
+Asked before - has the robot asked for help before in a similar situation.
 
-## 2. Data
-<!-- Source file, 100 examples, format. -->
-
-## 3. Method
-
-### 3.1 Decision Tree Algorithm
-<!-- ID3 / information-gain based tree construction. -->
-
-### 3.2 Information Calculation
-<!-- Entropy, information gain formulas — TO BE FILLED IN BY USER. -->
-
-### 3.3 Splitting Criterion
-<!-- Choose attribute with highest information gain at each node. -->
-
-### 3.4 Stopping Conditions
-<!-- Pure node / no attributes left / empty set handling. -->
-
-## 4. Experimental Design
-
-### 4.1 Train/Test Split
-<!-- How examples are partitioned. -->
-
-### 4.2 Training Set Sizes
-<!-- e.g. 10, 20, 50, 80. -->
-
-### 4.3 Trials per Size
-<!-- 10+ randomized trials per training size. -->
-
-## 5. Evaluation Metrics
-<!-- Accuracy, precision, recall — which chosen and why. -->
-
-## 6. Results
-
-### 6.1 Accuracy vs. Training Set Size
-<!-- Learning curve graph + table. -->
-
-### 6.2 Tree Size vs. Training Set Size
-<!-- Table + discussion: larger/smaller/same? -->
-
-### 6.3 Results Table
-<!-- Summary table. -->
-
-## 7. Analysis & Discussion
-<!-- Interpretation of results, metric justification, tree-size findings. -->
-
-## 8. How to Run
-<!-- Commands / usage. -->
-
-## 9. Conclusion
+Data and learning: There are 100 examples.  To train the decision tree you should use the information-based approach we went over in class, arranging the tree by the options that supply the most information. I will provide the data file later it is in .csv format with each row a run and each column a 1 or 0 for that columns attribute.
