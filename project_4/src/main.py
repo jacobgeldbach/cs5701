@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
-"""Experiment sweep driver: builds decision trees over random train/test splits of
-varying training-set size and logs per-trial results. See
+"""Experiment driver: builds decision trees over random train/test splits at a single
+training-set size and logs per-trial results. Run once per size you want to test. See
 tasks/05_experiment_sweep_and_logging.md for the full spec.
 
 Run from project_4/:
-    python src/main.py --sizes 10,20,50,80 --trials 10
+    python src/main.py --size 20 --trials 15 --seed 42
+    python src/main.py --size 20 --visualize      # also show the tree for this run
+    python src/main.py                            # defaults to all examples (max)
 """
 import argparse
 import csv
@@ -12,58 +14,70 @@ import os
 import random
 import statistics
 import sys
+from datetime import datetime
 
-from sampling import load_dataset, train_test_split
-from tree import build_tree, majority_label, predict, tree_size, tree_depth, accuracy
+from sampling import load_dataset, train_test_split, POSITIVE_LABEL
+from tree import (build_tree, majority_label, predict, tree_size, tree_depth,
+                  confusion_counts)
 
-DEFAULT_DATA = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "data", "Problem4DecisionTreeData.CSV",
-)
-DEFAULT_OUT = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    "results", "results.csv",
-)
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_DATA = os.path.join(PROJECT_ROOT, "data", "Problem4DecisionTreeData.CSV")
+RESULTS_DIR = os.path.join(PROJECT_ROOT, "results")
 
-RESULT_FIELDS = ["size", "trial", "accuracy", "tree_size", "tree_depth", "root_attribute"]
-
-
-def parse_sizes(args):
-    if args.sizes:
-        return [int(s) for s in args.sizes.split(",")]
-    if args.min_size is None or args.max_size is None or args.step is None:
-        raise SystemExit("Provide --sizes, or all of --min-size/--max-size/--step")
-    return list(range(args.min_size, args.max_size + 1, args.step))
+# {train,test}_{tp,fn,fp,tn} are the confusion-matrix counts with "ask for help"
+# (POSITIVE_LABEL) as the positive class, logged for both the training set (the tree
+# scored on its own rows) and the held-out test set. analyze.py derives accuracy,
+# precision and recall for each split from these. test_* is blank on a full-size run
+# (no held-out test set).
+RESULT_FIELDS = ["size", "trial",
+                 "train_tp", "train_fn", "train_fp", "train_tn",
+                 "test_tp", "test_fn", "test_fp", "test_tn",
+                 "tree_size", "tree_depth", "root_attribute"]
 
 
-def run_sweep(rows, attributes, label, sizes, trials, rng):
+def run_size(rows, attributes, label, size, trials, rng):
+    """Run `trials` random train/test splits at training-set `size` and return one
+    record per trial. When size covers all rows there is no held-out test set, so the
+    tree is built on everything and accuracy is left blank (still records tree stats)."""
     records = []
-    for size in sizes:
-        size_accs, size_tree_sizes = [], []
-        for trial in range(trials):
+    full_data = size >= len(rows)
+    size_accs, size_tree_sizes = [], []
+    for trial in range(trials):
+        if full_data:
+            train_rows, test_rows = rows, []
+        else:
             train_rows, test_rows = train_test_split(rows, size, rng)
-            root = build_tree(train_rows, attributes, label, majority_label(train_rows, label))
-            acc = accuracy(root, test_rows, label)
-            record = {
-                "size": size,
-                "trial": trial,
-                "accuracy": acc,
-                "tree_size": tree_size(root),
-                "tree_depth": tree_depth(root),
-                "root_attribute": root.attribute,
-            }
-            records.append(record)
+        root = build_tree(train_rows, attributes, label, majority_label(train_rows, label))
+        tr_tp, tr_fn, tr_fp, tr_tn = confusion_counts(root, train_rows, label, POSITIVE_LABEL)
+        test_counts = confusion_counts(root, test_rows, label, POSITIVE_LABEL)  # None when empty
+        te_tp, te_fn, te_fp, te_tn = test_counts if test_counts else (None, None, None, None)
+        acc = ((te_tp + te_tn) / (te_tp + te_fn + te_fp + te_tn)) if test_counts else None
+        record = {
+            "size": min(size, len(rows)),
+            "trial": trial,
+            "train_tp": tr_tp, "train_fn": tr_fn, "train_fp": tr_fp, "train_tn": tr_tn,
+            "test_tp": te_tp, "test_fn": te_fn, "test_fp": te_fp, "test_tn": te_tn,
+            "tree_size": tree_size(root),
+            "tree_depth": tree_depth(root),
+            "root_attribute": root.attribute,
+        }
+        records.append(record)
+        if acc is not None:
             size_accs.append(acc)
-            size_tree_sizes.append(record["tree_size"])
-        print(
-            f"size={size:>3}: mean acc={statistics.mean(size_accs):.3f}  "
-            f"mean tree_size={statistics.mean(size_tree_sizes):.1f}"
-        )
+        size_tree_sizes.append(record["tree_size"])
+    acc_str = f"{statistics.mean(size_accs):.3f}" if size_accs else "n/a (no test set)"
+    print(
+        f"size={min(size, len(rows)):>3}: mean acc={acc_str}  "
+        f"mean tree_size={statistics.mean(size_tree_sizes):.1f}"
+    )
     return records
 
 
-def write_results(records, out_path):
-    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
+def write_results(records, size, trials):
+    """Write per-trial rows to results/<size>_<trials>_<datestamp>.csv (auto-named)."""
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    out_path = os.path.join(RESULTS_DIR, f"{size}_{trials}_{stamp}.csv")
     with open(out_path, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=RESULT_FIELDS)
         writer.writeheader()
@@ -72,38 +86,33 @@ def write_results(records, out_path):
 
 
 def main():
-    ap = argparse.ArgumentParser(description=__doc__)
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default=DEFAULT_DATA, help="path to the CSV data file")
-    ap.add_argument("--sizes", default=None, help='comma-separated training sizes, e.g. "10,20,50,80"')
-    ap.add_argument("--min-size", type=int, default=None)
-    ap.add_argument("--max-size", type=int, default=None)
-    ap.add_argument("--step", type=int, default=None)
+    ap.add_argument("--size", type=int, default=None,
+                    help="training set size for this run (default: all examples / max)")
     ap.add_argument("--trials", type=int, default=10, help="random trials per size (default 10)")
     ap.add_argument("--seed", type=int, default=None, help="RNG seed for reproducibility")
-    ap.add_argument("--out", default=DEFAULT_OUT, help="path to write per-trial results CSV")
-    ap.add_argument("--visualize", action="store_true", help="also open a pygame tree view")
-    ap.add_argument("--visualize-size", type=int, default=None,
-                     help="training size for --visualize (default: all rows)")
+    ap.add_argument("--visualize", action="store_true",
+                    help="also open a pygame view of a tree built at --size")
     args = ap.parse_args()
 
     rows, attributes, label = load_dataset(args.data)
     rng = random.Random(args.seed)
 
-    if args.sizes or (args.min_size is not None):
-        sizes = parse_sizes(args)
-        records = run_sweep(rows, attributes, label, sizes, args.trials, rng)
-        write_results(records, args.out)
+    size = len(rows) if args.size is None else min(args.size, len(rows))
+
+    records = run_size(rows, attributes, label, size, args.trials, rng)
+    write_results(records, size, args.trials)
 
     if args.visualize:
         from visualization import show_tree
-        vis_size = args.visualize_size or len(rows)
-        if vis_size >= len(rows):
+        if size >= len(rows):
             root = build_tree(rows, attributes, label, majority_label(rows, label))
-            vis_size = len(rows)
         else:
-            train_rows, _ = train_test_split(rows, vis_size, rng)
+            train_rows, _ = train_test_split(rows, size, rng)
             root = build_tree(train_rows, attributes, label, majority_label(train_rows, label))
-        show_tree(root, attributes, train_size=vis_size)
+        show_tree(root, attributes, train_size=size)
 
     return 0
 

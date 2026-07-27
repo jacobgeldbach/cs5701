@@ -3,6 +3,9 @@ and tasks/04_train_test_sampling.md for the full spec."""
 import csv
 
 LABEL = "Decision"
+# The label value that means "ask for help" -- treated as the positive class when
+# computing recall/precision/confusion-matrix counts downstream.
+POSITIVE_LABEL = "Yes"
 
 
 def load_dataset(path):

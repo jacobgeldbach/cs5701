@@ -69,3 +69,27 @@ def accuracy(node, test_rows, label):
         return None
     correct = sum(1 for r in test_rows if predict(node, r) == r[label])
     return correct / len(test_rows)
+
+
+def confusion_counts(node, test_rows, label, positive):
+    """Confusion-matrix counts on test_rows with `positive` as the positive class
+    (here "ask for help"). Returns (tp, fn, fp, tn), or None when there is no test
+    set. A false negative -- the tree predicting "don't ask" when it should have
+    asked -- is the robot's costliest error, so keeping FN separate lets analyze.py
+    compute recall = tp / (tp + fn)."""
+    if not test_rows:
+        return None
+    tp = fn = fp = tn = 0
+    for r in test_rows:
+        pred = predict(node, r)
+        actual_pos = r[label] == positive
+        pred_pos = pred == positive
+        if actual_pos and pred_pos:
+            tp += 1
+        elif actual_pos and not pred_pos:
+            fn += 1
+        elif not actual_pos and pred_pos:
+            fp += 1
+        else:
+            tn += 1
+    return tp, fn, fp, tn
