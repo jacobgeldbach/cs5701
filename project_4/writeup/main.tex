@@ -17,7 +17,7 @@
 
 \begin{document}
 
-\title{Using ID3 Decision Trees to Classify and Analize Data}
+\title{Using ID3 Decision Trees to Classify and Analyze Data}
 
 \author{
     \IEEEauthorblockN{Jacob A. Geldbach}
@@ -48,7 +48,7 @@
 
 % =======================================================
 \section{Algorithm Description}
-    The algorithm for this project was aimed at producing a decision tree from a subset of data so that the testing subset's error rates could be classified and compared. Specifically a Ross Quinlan 1986 ID3 greedy most information gained first implementation was used to generate a decision tree. Wherein the program will begin with a training subset size input from 1-99, wherein that many rows of data from the given 100 row dataset are randomly chosen to comprise that run or trials training subset. Once the training subset for this run has been made up, each attributes Inforamtion Gained is calculated using the Information Equation shown in Eq.~\eqref{eq:info}, which is also talked about further in the next section. The attribute with the highest calculated Information Gain is then chosen to be the root of the tree, and this is repeated until there are no non-zero attributes left from this training subset. Each row that comprises the testing subset (100 row dataset - the training subset) is then tested against this built tree, where starting at the root of the tree, the attribute is looked up in the datarow and the tree is traversed until a terminal yes or no state is seen indicating that the decision tree has decided if the robot on that run asked for help or not. The answer the tree found for that data row is recorded. Once all data rows in the training subset are ran through the decision tree, a confusion matrix for this trial is calculated by comparing the decision trees answer (predicted) vs the data rows answer (actual). This confusion matrix allows for accuracy, recall and precision to be calulcated for that trial. The program was built so that many trials at this size could be ran (all with same sized training sets but randomly made up) and the error metrics could then be averaged across the multiple runs of the same training subset size. 
+    The algorithm for this project was aimed at producing a decision tree from a subset of data so that the testing subset's error rates could be classified and compared. Specifically a Ross Quinlan 1986 ID3 greedy most information gained first implementation was used to generate a decision tree. Wherein the program will begin with a training subset size input from 1-99, wherein that many rows of data from the given 100 row dataset are randomly chosen to comprise that run or trials training subset. Once the training subset for this run has been made up, each attributes Information Gain is calculated using the entropy equation shown in Eq.~\eqref{eq:info}, which is also talked about further in the next section. The attribute with the highest calculated Information Gain is then chosen to be the root of the tree, and this is repeated until there are no attributes with non-zero information gain left from this training subset. Each row that comprises the testing subset (100 row dataset - the training subset) is then tested against this built tree, where starting at the root of the tree, the attribute is looked up in the datarow and the tree is traversed until a terminal yes or no state is seen indicating that the decision tree has decided if the robot on that run asked for help or not. The answer the tree found for that data row is recorded. Once all data rows in the testing subset are ran through the decision tree, a confusion matrix for this trial is calculated by comparing the decision trees answer (predicted) vs the data rows answer (actual). This confusion matrix allows for accuracy, recall and precision to be calculated for that trial. The program was built so that many trials at this size could be ran (all with same sized training sets but randomly made up) and the error metrics could then be averaged across the multiple runs of the same training subset size. 
 
 \subsection*{Measuring Information}
 % TODO: Explain entropy I(p1,...,pn) = -sum p_i log2(p_i) over the class distribution
@@ -58,7 +58,7 @@
 % maximum information gain at each node (the classic ID3 greedy, one-step-lookahead
 % splitting rule), and why this is a greedy/local choice rather than a globally optimal
 % tree search.
-    The 1 bit of Information Gained or Entropy calculation shown in Eq.~\eqref{eq:info} is what the algorithm uses each iteration to choose the next attribute in the tree. Omitting any attributes that have already been chosen that run from the calculation it simply chooses which attribute this equation gives the highest value for based on the attributes and their probabilties in the comprised training subset.
+    The entropy calculation shown in Eq.~\eqref{eq:info} is what the algorithm uses each iteration to choose the next attribute in the tree. Entropy measures how mixed the Yes/No decisions are in a set of rows, and the Information Gain of a candidate attribute is the entropy of the rows at that node minus the size-weighted average of the entropies of the two subsets that splitting on that attribute produces. Omitting any attributes that have already been chosen that run from the calculation, it simply chooses the attribute with the highest Information Gain, meaning the attribute whose split leaves the least remaining entropy, based on the attributes and their probabilities in the comprised training subset.
 
 \begin{equation}
     I\big(p(v_1),\dots,p(v_n)\big) \;=\; -\sum_{i} p(v_i)\,\log_2 p(v_i)
@@ -85,7 +85,7 @@
 %   - The "full data" sweep condition (training size == all 100 rows) leaves no
 %     held-out test rows; accuracy/precision/recall are left blank for that condition
 %     while tree-size/depth/root-attribute are still recorded.
-    There were two undefined scenarios in the inforamtion calculating and building of the tree that needed to be addressed. The first was when an attribute has p_i = 0. This will lead to Eq.~\eqref{eq:info} being undefined as \log_2(0) goes to -INF, not to mention the attribute has a probibilty of 0 so it is simply skipped and not considered in the built decision tree. The 2nd case being when two attributes produce valid but equal gain. The tie breaker used in this implementation was simply which attribute came first in the CSV ordering, and this was kept consistent across all runs since the CSV was structured the same throughout.
+    There were two undefined scenarios in the information calculating and building of the tree that needed to be addressed. The first was when a class has $p_i = 0$. This will lead to Eq.~\eqref{eq:info} being undefined as $\log_2(0)$ goes to $-\infty$, also when $p_i = 0$ that term has a probability of 0 so that single term is simply skipped and not included in the entropy sum. The 2nd case being when two attributes produce valid but equal gain. The tie breaker used in this implementation was simply which attribute came first in the CSV ordering, and this was kept consistent across all runs since the CSV was structured the same throughout.
 
 \subsection*{Measuring Performance}
 % TODO: Explain the experiment design used to measure performance:
@@ -107,10 +107,36 @@
 %     run out), and this dataset has zero attribute patterns with conflicting labels,
 %     so the training set is always perfectly fit -- it's a sanity-check/baseline
 %     column, not a bug, and it sets up the train/test gap (overfitting) story.
-
+    Performance for a specific trials decision tree was measured by calculating the accuracy, precision and recall which was derived from that given runs confusion matrix results. Each training set size was ran on 50 different trials, each with its own randomly comprised same size training subset. The error metrics were then averaged across all the trials.
 
 % =======================================================
 \section{Results}
+
+% -------------------------------------------------------
+% Data from results/summary.csv (9 sizes x 50 trials each, unseeded).
+\begin{table*}[t]
+\caption{ID3 Decision Tree --- Sweep Results (50 trials per training-set size)}
+\begin{center}
+\footnotesize
+\setlength{\tabcolsep}{6pt}
+\begin{tabular}{c c c c c c c c c}
+\toprule
+\textbf{Train Size} & \textbf{Trials} & \textbf{Train Acc.} & \textbf{Test Acc.} & \textbf{Test Prec.} & \textbf{Test Recall} & \textbf{Mean Tree Size} & \textbf{Mean Tree Depth} & \textbf{Most Common Root Attr.} \\
+\midrule
+10 & 50 & 1.000 & 0.697 & 0.759 & 0.751 & 6.96  & 2.90 & Safe Situation \\
+20 & 50 & 1.000 & 0.816 & 0.878 & 0.820 & 11.12 & 3.88 & Safe Situation \\
+30 & 50 & 1.000 & 0.829 & 0.870 & 0.852 & 15.00 & 4.44 & Safe Situation \\
+40 & 50 & 1.000 & 0.878 & 0.897 & 0.910 & 17.96 & 4.74 & Safe Situation \\
+50 & 50 & 1.000 & 0.892 & 0.910 & 0.918 & 19.72 & 4.96 & Safe Situation \\
+60 & 50 & 1.000 & 0.924 & 0.928 & 0.951 & 21.52 & 5.22 & Safe Situation \\
+70 & 50 & 1.000 & 0.949 & 0.954 & 0.964 & 22.28 & 5.12 & Safe Situation \\
+80 & 50 & 1.000 & 0.952 & 0.949 & 0.974 & 23.12 & 5.24 & Safe Situation \\
+90 & 50 & 1.000 & 0.970 & 0.964 & 0.993 & 23.12 & 5.14 & Safe Situation \\
+\bottomrule
+\end{tabular}
+\label{tab:results}
+\end{center}
+\end{table*}
 
 % Figure 1 -- accuracy error (1 - accuracy), train vs. test curve, vs. training set
 % size. Generated by analyze.py -> results/accuracy_error_vs_size.png.
@@ -135,10 +161,18 @@
 \label{fig:recall_error_vs_size}
 \end{figure}
 
-% TODO (optional): precision_error_vs_size.png is also in images/ if you want a third
-% error figure -- \includegraphics[width=\linewidth]{precision_error_vs_size}
+% Figure 3 -- precision error (1 - precision), train vs. test curve, vs. training set
+% size. Generated by analyze.py -> results/precision_error_vs_size.png.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{precision_error_vs_size}
+\caption{ Precision error ($1 - $precision) vs. training set size, training-set curve
+          vs. held-out test-set curve (mean over 50 trials per size).
+        }
+\label{fig:precision_error_vs_size}
+\end{figure}
 
-% Figure 3 -- tree size (node count) vs. training set size.
+% Figure 4 -- tree size (node count) vs. training set size.
 % Generated by analyze.py -> results/tree_size_vs_size.png.
 \begin{figure}[H]
 \centering
@@ -149,29 +183,23 @@
 \label{fig:tree_size_vs_size}
 \end{figure}
 
-% -------------------------------------------------------
-% Data from results/summary.csv (4 sizes x 50 trials each, seed = size value).
-\begin{table*}[t]
-\caption{ID3 Decision Tree --- Sweep Results (50 trials per training-set size)}
-\begin{center}
-\footnotesize
-\setlength{\tabcolsep}{6pt}
-\begin{tabular}{c c c c c c c c c c}
-\toprule
-\textbf{Train Size} & \textbf{Trials} & \textbf{Train Acc.} & \textbf{Test Acc.} & \textbf{Test Prec.} & \textbf{Test Recall} & \textbf{Mean Tree Size} & \textbf{Mean Tree Depth} & \textbf{Most Common Root Attr.} \\
-\midrule
-10 & 50 & 1.000 & 0.744 & 0.800 & 0.791 & 6.68  & 2.62 & Safe Situation \\
-20 & 50 & 1.000 & 0.800 & 0.841 & 0.832 & 10.64 & 3.62 & Safe Situation \\
-50 & 50 & 1.000 & 0.897 & 0.911 & 0.919 & 19.08 & 4.90 & Safe Situation \\
-80 & 50 & 1.000 & 0.971 & 0.972 & 0.980 & 23.04 & 5.08 & Safe Situation \\
-\bottomrule
-\end{tabular}
-\label{tab:results}
-\end{center}
-\end{table*}
+% Figure 5 -- pygame screenshot of a tree built at training set size 10.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tree_size10}
+\caption{ Decision tree built from a training set of 10 examples.
+        }
+\label{fig:tree_size10}
+\end{figure}
 
-% TODO (optional): if you visualize a specific built tree (visualization.py), include
-% a screenshot here as a figure, similar to the before/after map figure in Project 3.
+% Figure 6 -- pygame screenshot of a tree built at training set size 90.
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{tree_size90}
+\caption{ Decision tree built from a training set of 90 examples.
+        }
+\label{fig:tree_size90}
+\end{figure}
 
 % =======================================================
 \section{Discussion / Conclusions}
@@ -191,36 +219,20 @@
 %     recall column back to the shrinking train/test gap as size grows (size 10 gap
 %     ~0.26 down to size 80 gap ~0.03) -- that shrinking gap is the overfitting story,
 %     the training column itself is expected to be flat, not evidence of a problem.
+    The results clearly show that the larger the training subset, the more accurate the result of the decision tree was when tested against the testing subset across all three metrics. Also the tree size scaled significantly with the size of the training subset and the root attribute was Safe Situation in every trial at every size. Intuitively this seems like appropriate programming for a robot in regards to when it needs to ask for help or not. 
 
-\subsection*{Strengths and Weaknesses}
-% TODO: Strengths -- e.g. ID3 is simple, fast, fully deterministic given a fixed
-% training set, produces an interpretable/human-readable tree, no hyperparameters to
-% tune. Weaknesses -- e.g. greedy one-step-lookahead splitting can miss globally
-% better trees, no pruning so it can overfit on small/noisy training sets, ties broken
-% arbitrarily by attribute/label order which is a bit unprincipled, only supports
-% binary attributes/labels, high variance in accuracy at very small training sizes
-% due to which 10 (or however few) examples happened to be sampled.
-    Placeholder text on strengths and weaknesses.
+    The decision tree when ran against its own training subset it was built from had an expected 100 percent success rate so the overfitting standard trend is a bit harder to see when looking at the testing subsets trend curve, but with the addition of more data rows the trending closer to the perfect training subset does seem to start to plateau. This seems to be due to enough attributes becoming non-zero in the training subset therefore the decision trees number of nodes begin to grow no matter how little an attribute gives in regards to information. Although there is not a size in training subset where we explicitly see the testing subset start to do worse, this may be due to the limited size of the testing subset, where as the training subset grows the testing subset size shrinks and perhaps if we had more data to comprise the testing subset as the training subset and the decision tree it built grew less efficiently, the classic overfitting curve trend would be seen. To the point where between training subset sizes of 70 and 80 we see the precision metric actually get worse, where precision measures what fraction of the situations where the decision tree called for help genuinely required it, essentially the tree began producing more false positives at that point. Although asking for help in a situation where the robot did not have to is the safer direction to err in as opposed to false negatives.
 
-\subsection*{Future Improvements}
-% TODO: e.g. add pruning (reduced-error or cost-complexity) to fight overfitting,
-% k-fold cross-validation instead of a single random split per trial for lower-variance
-% estimates, extend to non-binary/continuous attributes, add a confidence measure at
-% leaves (e.g. class proportion) instead of a hard majority label, ensemble methods
-% (bagging/random forest) to reduce variance, more training examples collected overall.
-    Placeholder text on possible improvements.
+    The strengths of the ID3 greedy first information based building of a decision tree is that it is a relatively simple math calculation that can be iterated over easily by computers in order to build out a pretty effective tree for coming to a conclusion. The greedy first approach is also a strength as this local focused way of choosing the next best attribute without taking into account the already built tree makes much larger training datasets possible to be used. Then the solution itself would be more accurate with the size of the training set being larger as we were able to see in the data collected above. 
+
 
 % =======================================================
 \section*{Use of AI}
 
 \subsection*{Coding}
-% TODO: Which tool(s)/model(s), and how used (initial code, debugging, APIs, tests,
-% other). Be specific about which files/tasks AI helped with vs. what you wrote by hand.
-    Placeholder text describing AI use in coding.
+    The Claude Sonnet 5.0 Model was used for the initial implementation of the project's argument parsing, the CSV data loading and train/test sampling, the per-trial results logging, the matplotlib graph generation in analyze.py, and the Pygame set up used to render a built decision tree. This was done by providing the model with detailed task level .md files, one per component, kept in the project's tasks/ directory. Other than that, the core ID3 logic was written by hand, specifically the entropy and information gain calculations and the recursive tree building that applies them.
 
 \subsection*{Writeup}
-% TODO: Whether AI helped draft/revise the write-up, how, and how you ensured the
-% final text reflects your own understanding. (Write N/A if you used none.)
-    Placeholder text describing AI use in the writeup.
+    The Claude Opus 5 Model was used for all the Latex structural code and library inclusions needed for this document, including the formatting of the results table and the figure blocks holding the graphs and the decision tree screenshots. The model was also used for grammar and spelling checks of the section content, all of the content in the sections are my own words. All of the data in the tables and graphs were gathered and added to the document by manually running the decision tree program.
 
 \end{document}

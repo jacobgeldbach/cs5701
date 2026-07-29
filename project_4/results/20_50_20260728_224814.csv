@@ -1,0 +1,51 @@
+size,trial,train_tp,train_fn,train_fp,train_tn,test_tp,test_fn,test_fp,test_tn,tree_size,tree_depth,root_attribute
+20,0,12,0,0,8,43,5,4,28,7,3,Safe Situation
+20,1,13,0,0,7,42,5,11,22,11,4,Safe Situation
+20,2,11,0,0,9,47,2,7,24,9,4,Safe Situation
+20,3,12,0,0,8,38,10,8,24,15,5,Safety Critical Decision
+20,4,15,0,0,5,31,14,9,26,9,4,Safe Situation
+20,5,10,0,0,10,39,11,7,23,7,3,Safe Situation
+20,6,10,0,0,10,45,5,3,27,15,4,Safe Situation
+20,7,13,0,0,7,43,4,25,8,9,4,Safety Critical Decision
+20,8,11,0,0,9,34,15,1,30,11,3,Familiar Situation
+20,9,11,0,0,9,34,15,4,27,13,4,Safe Situation
+20,10,11,0,0,9,44,5,4,27,7,3,Safe Situation
+20,11,11,0,0,9,40,9,0,31,11,3,Safe Situation
+20,12,12,0,0,8,45,3,6,26,15,4,Safe Situation
+20,13,12,0,0,8,40,8,8,24,7,3,Safe Situation
+20,14,11,0,0,9,31,18,8,23,11,3,Safe Situation
+20,15,12,0,0,8,43,5,0,32,13,4,Safe Situation
+20,16,10,0,0,10,46,4,4,26,11,5,Safe Situation
+20,17,10,0,0,10,40,10,6,24,13,4,Safe Situation
+20,18,9,0,0,11,46,5,4,25,7,3,Safe Situation
+20,19,14,0,0,6,41,5,11,23,9,4,Safety Critical Decision
+20,20,11,0,0,9,32,17,3,28,13,4,Safe Situation
+20,21,11,0,0,9,40,9,3,28,13,4,Safe Situation
+20,22,11,0,0,9,40,9,3,28,13,4,Safe Situation
+20,23,14,0,0,6,41,5,3,31,13,4,Safe Situation
+20,24,11,0,0,9,41,8,0,31,11,3,Familiar Situation
+20,25,12,0,0,8,42,6,11,21,11,5,Safe Situation
+20,26,9,0,0,11,40,11,5,24,9,4,Safe Situation
+20,27,14,0,0,6,37,9,10,24,7,3,Safe Situation
+20,28,11,0,0,9,47,2,7,24,9,4,Safe Situation
+20,29,9,0,0,11,36,15,0,29,13,4,Familiar Situation
+20,30,8,0,0,12,32,20,6,22,17,4,In a hurry
+20,31,8,0,0,12,37,15,3,25,15,5,Familiar Situation
+20,32,12,0,0,8,34,14,19,13,15,7,Asked Before
+20,33,11,0,0,9,44,5,0,31,13,4,Safe Situation
+20,34,13,0,0,7,42,5,11,22,9,4,Safety Critical Decision
+20,35,13,0,0,7,41,6,11,22,11,5,Safe Situation
+20,36,11,0,0,9,38,11,8,23,17,4,Safe Situation
+20,37,9,0,0,11,45,6,13,16,9,4,Safe Situation
+20,38,12,0,0,8,31,17,2,30,19,5,Safe Situation
+20,39,7,0,0,13,39,14,1,26,11,3,Familiar Situation
+20,40,13,0,0,7,35,12,3,30,17,5,Safety Critical Decision
+20,41,12,0,0,8,40,8,0,32,11,3,Safe Situation
+20,42,13,0,0,7,37,10,10,23,9,3,Safe Situation
+20,43,13,0,0,7,42,5,4,29,7,3,Safe Situation
+20,44,10,0,0,10,45,5,4,26,7,3,Safe Situation
+20,45,11,0,0,9,38,11,7,24,7,3,Safe Situation
+20,46,14,0,0,6,37,9,5,29,15,5,Safe Situation
+20,47,14,0,0,6,41,5,4,30,7,3,Safe Situation
+20,48,13,0,0,7,38,9,7,26,7,3,Safe Situation
+20,49,12,0,0,8,44,4,4,28,11,5,Safe Situation

@@ -1,0 +1,51 @@
+size,trial,train_tp,train_fn,train_fp,train_tn,test_tp,test_fn,test_fp,test_tn,tree_size,tree_depth,root_attribute
+40,0,23,0,0,17,32,5,0,23,13,4,Safe Situation
+40,1,21,0,0,19,39,0,8,13,21,5,Safe Situation
+40,2,20,0,0,20,29,11,0,20,17,5,Safe Situation
+40,3,23,0,0,17,33,4,3,20,19,5,Safety Critical Decision
+40,4,27,0,0,13,33,0,11,16,21,5,Safe Situation
+40,5,27,0,0,13,32,1,4,23,23,5,Safe Situation
+40,6,28,0,0,12,30,2,14,14,17,6,Safe Situation
+40,7,22,0,0,18,35,3,2,20,21,5,Safe Situation
+40,8,24,0,0,16,36,0,8,16,21,5,Safe Situation
+40,9,23,0,0,17,28,9,0,23,11,3,Safe Situation
+40,10,26,0,0,14,30,4,4,22,21,5,Safe Situation
+40,11,26,0,0,14,33,1,8,18,25,7,Safe Situation
+40,12,22,0,0,18,31,7,4,18,15,4,Safe Situation
+40,13,28,0,0,12,29,3,7,21,17,4,Safe Situation
+40,14,19,0,0,21,37,4,4,15,15,4,Safe Situation
+40,15,23,0,0,17,35,2,5,18,23,5,Safe Situation
+40,16,22,0,0,18,34,4,0,22,17,5,Safe Situation
+40,17,26,0,0,14,32,2,7,19,21,5,Safe Situation
+40,18,21,0,0,19,37,2,1,20,25,5,Safety Critical Decision
+40,19,26,0,0,14,32,2,4,22,11,5,Safe Situation
+40,20,26,0,0,14,30,4,5,21,19,5,Safe Situation
+40,21,22,0,0,18,37,1,3,19,23,5,Safe Situation
+40,22,26,0,0,14,30,4,3,23,15,4,Safe Situation
+40,23,21,0,0,19,39,0,6,15,17,5,Safe Situation
+40,24,27,0,0,13,29,4,7,20,17,4,Safe Situation
+40,25,26,0,0,14,31,3,5,21,19,5,Safety Critical Decision
+40,26,25,0,0,15,33,2,4,21,15,4,Safe Situation
+40,27,23,0,0,17,29,8,0,23,11,3,Safe Situation
+40,28,21,0,0,19,34,5,8,13,21,5,Safe Situation
+40,29,24,0,0,16,36,0,7,17,21,5,Safe Situation
+40,30,22,0,0,18,37,1,5,17,23,5,Safe Situation
+40,31,24,0,0,16,28,8,1,23,19,6,Safe Situation
+40,32,23,0,0,17,32,5,2,21,21,5,Safe Situation
+40,33,24,0,0,16,33,3,3,21,19,5,Safe Situation
+40,34,24,0,0,16,32,4,1,23,17,5,Safe Situation
+40,35,25,0,0,15,35,0,11,14,13,4,Safe Situation
+40,36,25,0,0,15,31,4,5,20,21,5,Safe Situation
+40,37,22,0,0,18,33,5,0,22,13,4,Safe Situation
+40,38,27,0,0,13,31,2,0,27,17,5,Safe Situation
+40,39,24,0,0,16,33,3,7,17,21,5,Safe Situation
+40,40,21,0,0,19,37,2,0,21,17,5,Safe Situation
+40,41,26,0,0,14,34,0,4,22,11,4,Safe Situation
+40,42,23,0,0,17,32,5,0,23,13,4,Safe Situation
+40,43,27,0,0,13,29,4,2,25,19,5,Safe Situation
+40,44,24,0,0,16,33,3,1,23,17,5,Safe Situation
+40,45,25,0,0,15,35,0,5,20,21,5,Safe Situation
+40,46,22,0,0,18,32,6,3,19,17,5,Safe Situation
+40,47,23,0,0,17,30,7,3,20,23,5,Safe Situation
+40,48,27,0,0,13,28,5,3,24,13,4,Safe Situation
+40,49,27,0,0,13,33,0,4,23,11,4,Safe Situation
