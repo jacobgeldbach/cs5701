@@ -47,21 +47,8 @@
 \end{IEEEkeywords}
 
 % =======================================================
-\section{Introduction}
-% TODO: Describe the decision problem in your own words -- a robot deciding whether to
-% ask a human for help vs. act on its own, based on 7 binary situational attributes
-% (Familiar Situation, In a hurry, Long Delay, Safe Situation, Confident, Safety
-% Critical Decision, Asked Before) and the label Decision (Yes = ask for help, No =
-% robot decides). Mention the dataset size (100 labeled examples), that this is a
-% supervised learning / classification task solved with ID3, and give a roadmap of the
-% rest of the paper (algorithm description, results table + graphs, discussion,
-% conclusions).
-    Placeholder introduction text.
-
-% =======================================================
 \section{Algorithm Description}
-% TODO: Explain ID3 / information gain in your own words. Cover the three required
-% sub-points below as clear paragraphs (or \subsection*{} blocks if that reads better).
+    The algorithm for this project was aimed at producing a decision tree from a subset of data so that the testing subset's error rates could be classified and compared. Specifically a Ross Quinlan 1986 ID3 greedy most information gained first implementation was used to generate a decision tree. Wherein the program will begin with a training subset size input from 1-99, wherein that many rows of data from the given 100 row dataset are randomly chosen to comprise that run or trials training subset. Once the training subset for this run has been made up, each attributes Inforamtion Gained is calculated using the Information Equation shown in Eq.~\eqref{eq:info}, which is also talked about further in the next section. The attribute with the highest calculated Information Gain is then chosen to be the root of the tree, and this is repeated until there are no non-zero attributes left from this training subset. Each row that comprises the testing subset (100 row dataset - the training subset) is then tested against this built tree, where starting at the root of the tree, the attribute is looked up in the datarow and the tree is traversed until a terminal yes or no state is seen indicating that the decision tree has decided if the robot on that run asked for help or not. The answer the tree found for that data row is recorded. Once all data rows in the training subset are ran through the decision tree, a confusion matrix for this trial is calculated by comparing the decision trees answer (predicted) vs the data rows answer (actual). This confusion matrix allows for accuracy, recall and precision to be calulcated for that trial. The program was built so that many trials at this size could be ran (all with same sized training sets but randomly made up) and the error metrics could then be averaged across the multiple runs of the same training subset size. 
 
 \subsection*{Measuring Information}
 % TODO: Explain entropy I(p1,...,pn) = -sum p_i log2(p_i) over the class distribution
@@ -71,7 +58,7 @@
 % maximum information gain at each node (the classic ID3 greedy, one-step-lookahead
 % splitting rule), and why this is a greedy/local choice rather than a globally optimal
 % tree search.
-    Placeholder text on entropy and information gain. Refer to Eq.~\eqref{eq:info} below.
+    The 1 bit of Information Gained or Entropy calculation shown in Eq.~\eqref{eq:info} is what the algorithm uses each iteration to choose the next attribute in the tree. Omitting any attributes that have already been chosen that run from the calculation it simply chooses which attribute this equation gives the highest value for based on the attributes and their probabilties in the comprised training subset.
 
 \begin{equation}
     I\big(p(v_1),\dots,p(v_n)\big) \;=\; -\sum_{i} p(v_i)\,\log_2 p(v_i)
@@ -98,7 +85,7 @@
 %   - The "full data" sweep condition (training size == all 100 rows) leaves no
 %     held-out test rows; accuracy/precision/recall are left blank for that condition
 %     while tree-size/depth/root-attribute are still recorded.
-    Placeholder text on undefined/edge cases.
+    There were two undefined scenarios in the inforamtion calculating and building of the tree that needed to be addressed. The first was when an attribute has p_i = 0. This will lead to Eq.~\eqref{eq:info} being undefined as \log_2(0) goes to -INF, not to mention the attribute has a probibilty of 0 so it is simply skipped and not considered in the built decision tree. The 2nd case being when two attributes produce valid but equal gain. The tie breaker used in this implementation was simply which attribute came first in the CSV ordering, and this was kept consistent across all runs since the CSV was structured the same throughout.
 
 \subsection*{Measuring Performance}
 % TODO: Explain the experiment design used to measure performance:
@@ -120,7 +107,7 @@
 %     run out), and this dataset has zero attribute patterns with conflicting labels,
 %     so the training set is always perfectly fit -- it's a sanity-check/baseline
 %     column, not a bug, and it sets up the train/test gap (overfitting) story.
-    Placeholder text on the performance-measurement methodology.
+
 
 % =======================================================
 \section{Results}
